@@ -118,7 +118,7 @@ class Queue {
     BullBoard.router.use(path, BullBoard.router._router)
 
     const server = BullBoard.router.listen(port, () => {
-      this.Logger.info(`bull board on http://localhost:${port}`)
+      this.Logger.info(`bull board on http://localhost:${port}${path}`)
     })
 
     const shutdown = () => {
