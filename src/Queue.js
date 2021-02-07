@@ -7,6 +7,7 @@ const humanInterval = require('human-interval')
 const differenceInMilliseconds = require('date-fns/differenceInMilliseconds')
 const parseISO = require('date-fns/parseISO')
 const fs = require('fs')
+const basicAuth = require('express-basic-auth');
 
 class Queue {
   constructor(Logger, Config, jobs, app, resolver) {
@@ -100,12 +101,21 @@ class Queue {
     }
   }
 
-  ui(port = 9999) {
+  ui(path = '/', port = 9999, users = null) {
     BullBoard.setQueues(
       Object.values(this.queues).map(
         (queue) => new BullBoard.BullAdapter(queue.bull)
       )
     )
+
+    if (users) {
+      BullBoard.router.use(basicAuth({
+          users: users,
+          challenge: true
+      }))
+    }
+
+    BullBoard.router.use(path, BullBoard.router._router)
 
     const server = BullBoard.router.listen(port, () => {
       this.Logger.info(`bull board on http://localhost:${port}`)
