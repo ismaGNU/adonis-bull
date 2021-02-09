@@ -101,7 +101,7 @@ class Queue {
     }
   }
 
-  ui(path = '/', port = 9999, users = null) {
+  ui(host = 'localhost', path = '/', port = 9999, users = null) {
     BullBoard.setQueues(
       Object.values(this.queues).map(
         (queue) => new BullBoard.BullAdapter(queue.bull)
@@ -117,8 +117,8 @@ class Queue {
 
     BullBoard.router.use(path, BullBoard.router._router)
 
-    const server = BullBoard.router.listen(port, () => {
-      this.Logger.info(`bull board on http://localhost:${port}${path}`)
+    const server = BullBoard.router.listen(port, host, () => {
+      this.Logger.info(`bull board on http://${host}:${port}${path}`)
     })
 
     const shutdown = () => {
